@@ -917,7 +917,7 @@ function renderSystemInfo(data) {
     { label: "Total Memory", value: `${data.totalMemory} GB` || "Unknown" },
     { label: "Free Memory", value: `${data.freeMemory} GB` || "Unknown" },
     { label: "Used Memory", value: `${data.usedMemory} GB` || "Unknown" },
-    { label: "System Uptime", value: `${Math.floor(data.uptime / 3600)} hours` || "Unknown" },
+    { label: "System Uptime", value: (() => { const s = Number(data.uptime || 0); const d = Math.floor(s / 86400); const h = Math.floor((s % 86400) / 3600); const m = Math.floor((s % 3600) / 60); return d > 0 ? `${d}d ${h}h ${m}m` : (h > 0 ? `${h}h ${m}m` : `${m}m`); })() },
     { label: "Hostname", value: data.hostname || "Unknown" },
     { label: "Username", value: data.username || "Unknown" },
     { label: "Node.js Version", value: data.nodeVersion || "Unknown" },
@@ -1978,3 +1978,4 @@ window.addEventListener("DOMContentLoaded", () => {
   loadCoreData();
   updateLiveStatusFromWatch();
 });
+
