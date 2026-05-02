@@ -6,7 +6,7 @@ const sampleData = {
     totalFolders: 156,
     totalSizeBytes: 2450000000,
     oldestFileDate: "2021-03-12T00:00:00.000Z",
-    oldestFilePath: "C:\\Project Files\\Project_Proposal.docx"
+    oldestFilePath: "C:\\DemoData\\Project_Proposal.docx"
   },
   files: [
     {
@@ -17,8 +17,8 @@ const sampleData = {
       createdAt: "2021-03-12T10:15:00.000Z",
       modifiedAt: "2021-03-12T10:15:00.000Z",
       permissions: "rw-r--r--",
-      owner: "SUMIT\\Sumit",
-      path: "C:\\Project Files\\Project_Proposal.docx"
+      owner: "ADMIN\\User",
+      path: "C:\\DemoData\\Project_Proposal.docx"
     },
     {
       name: "System_Design.pptx",
@@ -28,8 +28,8 @@ const sampleData = {
       createdAt: "2023-04-18T09:20:00.000Z",
       modifiedAt: "2023-04-18T09:20:00.000Z",
       permissions: "rw-r--r--",
-      owner: "SUMIT\\Sumit",
-      path: "C:\\Project Files\\System_Design.pptx"
+      owner: "ADMIN\\User",
+      path: "C:\\DemoData\\System_Design.pptx"
     },
     {
       name: "Data_Analysis.xlsx",
@@ -39,8 +39,8 @@ const sampleData = {
       createdAt: "2023-05-09T14:35:00.000Z",
       modifiedAt: "2023-05-09T14:35:00.000Z",
       permissions: "rw-r--r--",
-      owner: "SUMIT\\Sumit",
-      path: "C:\\Project Files\\Data_Analysis.xlsx"
+      owner: "ADMIN\\User",
+      path: "C:\\DemoData\\Data_Analysis.xlsx"
     },
     {
       name: "Project_Report.pdf",
@@ -50,8 +50,8 @@ const sampleData = {
       createdAt: "2023-06-21T11:45:00.000Z",
       modifiedAt: "2023-06-21T11:45:00.000Z",
       permissions: "rw-r--r--",
-      owner: "SUMIT\\Sumit",
-      path: "C:\\Project Files\\Project_Report.pdf"
+      owner: "ADMIN\\User",
+      path: "C:\\DemoData\\Project_Report.pdf"
     },
     {
       name: "Screenshot.png",
@@ -61,8 +61,8 @@ const sampleData = {
       createdAt: "2023-07-02T13:10:00.000Z",
       modifiedAt: "2023-07-02T13:10:00.000Z",
       permissions: "rw-r--r--",
-      owner: "SUMIT\\Sumit",
-      path: "C:\\Project Files\\Screenshot.png"
+      owner: "ADMIN\\User",
+      path: "C:\\DemoData\\Screenshot.png"
     }
   ],
   fileTypes: [
@@ -75,9 +75,9 @@ const sampleData = {
   ],
   largest: [
     { name: "Windows11-22H2.iso", sizeBytes: 4690000000, path: "C:\\Downloads\\Windows11-22H2.iso" },
-    { name: "Project_Video.mp4", sizeBytes: 512000000, path: "C:\\Project Files\\Project_Video.mp4" },
-    { name: "Dataset_Backup.zip", sizeBytes: 256000000, path: "C:\\Project Files\\Dataset_Backup.zip" },
-    { name: "System_Image.png", sizeBytes: 128000000, path: "C:\\Project Files\\System_Image.png" },
+    { name: "Project_Video.mp4", sizeBytes: 512000000, path: "C:\\DemoData\\Project_Video.mp4" },
+    { name: "Dataset_Backup.zip", sizeBytes: 256000000, path: "C:\\DemoData\\Dataset_Backup.zip" },
+    { name: "System_Image.png", sizeBytes: 128000000, path: "C:\\DemoData\\System_Image.png" },
     { name: "VirtualBox-6.1.50.exe", sizeBytes: 103450000, path: "C:\\Installers\\VirtualBox-6.1.50.exe" }
   ],
   sizeBuckets: [
@@ -90,7 +90,7 @@ const sampleData = {
   scans: [
     {
       id: 31,
-      rootPath: "C:\\Project Files",
+      rootPath: "C:\\DemoData",
       startedAt: "2024-04-28T09:05:00.000Z",
       completedAt: "2024-04-28T09:07:00.000Z",
       totalFiles: 1248
@@ -106,22 +106,22 @@ const sampleData = {
   aging: [
     {
       name: "Project_Proposal.docx",
-      path: "C:\\Project Files\\Project_Proposal.docx",
+      path: "C:\\DemoData\\Project_Proposal.docx",
       sizeBytes: 24576,
       modifiedAt: "2021-03-12T10:15:00.000Z",
-      owner: "SUMIT\\Sumit"
+      owner: "ADMIN\\User"
     },
     {
       name: "System_Design.pptx",
-      path: "C:\\Project Files\\System_Design.pptx",
+      path: "C:\\DemoData\\System_Design.pptx",
       sizeBytes: 2450000,
       modifiedAt: "2023-04-18T09:20:00.000Z",
-      owner: "SUMIT\\Sumit"
+      owner: "ADMIN\\User"
     }
   ],
   dirSummary: [
     {
-      path: "C:\\Project Files",
+      path: "C:\\DemoData",
       totalFiles: 4,
       totalSizeBytes: 4377576
     },
@@ -330,8 +330,8 @@ async function fetchJson(url, options) {
         freeMemory: 18,
         usedMemory: 14,
         uptime: 345600,
-        hostname: "DESKTOP-SUMIT",
-        username: "SUMIT\\Sumit",
+        hostname: "DESKTOP-DEMO",
+        username: "ADMIN\\User",
         nodeVersion: "v20.10.0"
       };
     }
