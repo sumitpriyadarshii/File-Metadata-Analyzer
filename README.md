@@ -1,63 +1,173 @@
 # File Metadata Analyzer
 
-This project scans a directory, stores file metadata in SQLite, and shows a dashboard UI with real-time updates.
+File Metadata Analyzer is a full-stack directory scanning and metadata dashboard built for fast inspection, reporting, and live monitoring. It stores scan results in SQLite, updates the interface in real time, and includes an optional Windows C scanner for course requirements.
 
-## Structure
-- frontend: static dashboard UI
-- backend: Express API and SQLite storage
+## 1. Project Overview
 
-## Run locally
-1. Open a terminal in backend
-2. npm install
-3. npm run dev
-4. Open http://localhost:4000
+This project scans folders and files, extracts metadata, stores the results in a database, and presents the output in a structured dashboard. It is designed to support background scanning, duplicate detection, search, summary reporting, and system information display.
 
-## Scan a directory
-- Click Scan Directory and enter a full path, for example:
-  C:\Users\Sumit\Documents
+### Project Goals
 
-The scan runs as a background job. The UI polls status until completion.
+- Scan directories reliably and store metadata in SQLite.
+- Present scan results through a clear dashboard UI.
+- Support real-time updates during scanning.
+- Provide advanced analytics such as duplicate and aging reports.
+- Keep an optional C implementation available without replacing the Node backend.
 
-## Advanced backend endpoints
-- POST /api/scan (body: { path, incremental }) -> returns jobId
-- GET /api/status/:jobId -> job state and result
-- GET /api/search -> advanced filters (name, owner, size, date)
-- GET /api/duplicates -> hash-based duplicate groups
-- GET /api/aging?days=90 -> old/unused files
-- GET /api/dir-summary?depth=2 -> folder-level totals
-- GET /api/export?format=csv|json -> report export
+## 2. Module-Wise Breakdown
 
-## CLI scan
-- npm run scan -- "C:\Users\Sumit\Documents"
-- npm run scan -- --incremental "C:\Users\Sumit\Documents"
+### Backend
 
-## Optional C scanner (keeps Node backend intact)
-If your course requires C, you can use the C scanner to write into the same SQLite DB.
-See [c_scanner/README.md](c_scanner/README.md) for build/run steps.
+- Handles directory scanning, job scheduling, and API responses.
+- Stores scan and file metadata in SQLite.
+- Broadcasts live scan updates through WebSocket.
+- Exposes search, duplicate, aging, export, and system-info endpoints.
 
-## Deploy on Vercel
+### Frontend
 
-### What works on Vercel
-- Frontend hosting (landing + dashboard UI)
-- Static assets and client-side rendering
+- Renders the dashboard, charts, tables, and scan status panels.
+- Requests data from the backend and updates the UI dynamically.
+- Shows live progress, system information, and file statistics.
 
-### What does not work on Vercel serverless (for this app design)
-- Continuous local disk scanning of your own machine
-- Long-running filesystem watchers
-- SQLite file persistence for production-like backend state
-- WebSocket-based live updates from a long-running Node server
+### Optional C Scanner
 
-This project's backend scans local filesystem paths (like `C:\Users\...`) and uses long-running Express + WebSocket + SQLite workflow, so full backend behavior is not suitable for Vercel serverless functions.
+- Scans directories using a Windows-native C implementation.
+- Writes into the same SQLite database as the Node backend.
+- Helps satisfy the C-language requirement while preserving the main architecture.
 
-### Recommended deployment model
-1. Deploy frontend on Vercel (this repo now includes `vercel.json` for routing).
-2. Keep backend on a VM/container platform (Railway/Render/EC2/local machine).
-3. Point frontend API calls to that backend URL if you move backend to a public host.
+### API Layer
 
-### Vercel quick steps
-1. Import this GitHub repo into Vercel.
-2. Framework preset: `Other`.
-3. Root directory: project root.
-4. Deploy.
+- Serves the application and connects the frontend to backend logic.
+- Supports deployment routing for hosting scenarios such as Vercel.
 
-With current code, Vercel deployment is best used as a frontend/demo host. For full scanning features, run backend separately.
+## 3. Functionalities
+
+- Background directory scanning with progress updates.
+- Incremental scan support.
+- Duplicate file detection using SHA-256 hashes.
+- Advanced filtering by name, owner, type, size, and date.
+- Aging analysis for old files.
+- Directory summary by depth.
+- Export support for CSV and JSON.
+- Live watcher status.
+- Real system information display.
+- Responsive dashboard views for analysis and navigation.
+
+## 4. Technology Used
+
+### Programming Languages
+
+- JavaScript (Node.js and browser-side scripting)
+- C (optional scanner module)
+- HTML
+- CSS
+
+### Libraries and Tools
+
+- Express.js
+- SQLite3 / sqlite
+- ws (WebSocket)
+- chokidar
+- cors
+- Chart.js
+
+### Other Tools
+
+- GitHub for version control
+- VS Code for development
+- Windows APIs for owner and file attribute detection
+
+## 5. Flow Diagram
+
+```mermaid
+flowchart TD
+	A[User opens dashboard] --> B[Frontend loads UI]
+	B --> C[User starts scan]
+	C --> D[Backend creates scan job]
+	D --> E[Scanner reads directory]
+	E --> F[Metadata saved to SQLite]
+	F --> G[Progress broadcast over WebSocket]
+	G --> H[Frontend updates charts and tables]
+	H --> I[User reviews search, duplicates, and summaries]
+```
+
+## Local Setup
+
+1. Open a terminal in the `backend` directory.
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Start the backend:
+
+```bash
+npm run dev
+```
+
+4. Open the application:
+
+```text
+http://localhost:4000
+```
+
+## API Reference
+
+- `POST /api/scan` - start a scan with `{ path, incremental }`
+- `GET /api/status/:jobId` - fetch scan job status and result
+- `GET /api/search` - advanced file filtering
+- `GET /api/duplicates` - group files by hash
+- `GET /api/aging?days=90` - show older files
+- `GET /api/dir-summary?depth=2` - folder-level size summary
+- `GET /api/export?format=csv|json` - export results
+- `GET /api/watch` - inspect watcher state
+- `GET /api/system-info` - return host system information
+
+## Testing
+
+Run the backend smoke tests with:
+
+```bash
+cd backend
+npm test
+```
+
+The current test suite validates the system-info and watcher endpoints.
+
+## Optional C Scanner
+
+If your course requires a C implementation, the `c_scanner` folder contains a Windows-native scanner that writes into the same SQLite database.
+
+Build and usage instructions are documented in [c_scanner/README.md](c_scanner/README.md).
+
+## Deployment Notes
+
+This project is built around a persistent Node.js backend with local filesystem access, SQLite persistence, and WebSocket updates. For that reason, the full backend is best hosted on a VM, container service, or local machine.
+
+Recommended deployment approach:
+
+1. Host the frontend on Vercel or another static host.
+2. Run the backend on a persistent runtime.
+3. Point the frontend API base URL to the backend host if deployed separately.
+
+## Example Commands
+
+```bash
+# Start the backend
+cd backend
+npm run dev
+
+# Run backend tests
+npm test
+
+# Start a CLI scan
+npm run scan -- "C:\Users\Sumit\Documents"
+
+# Run an incremental CLI scan
+npm run scan -- --incremental "C:\Users\Sumit\Documents"
+```
+
+## License
+
+This project is created for academic use.
