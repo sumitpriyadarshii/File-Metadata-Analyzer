@@ -3,6 +3,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/api", "destination": "/api/index.js" },
     { "source": "/styles.css", "destination": "/frontend/styles.css" },
     { "source": "/app.js", "destination": "/frontend/app.js" },
     { "source": "/dashboard", "destination": "/frontend/dashboard.html" },

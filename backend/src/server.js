@@ -33,16 +33,19 @@ app.get("/dashboard", (req, res) => {
 app.use(express.static(frontendDir));
 
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
 const wsClients = new Set();
+let wss = null;
 
-wss.on("connection", (socket) => {
-  wsClients.add(socket);
+if (!process.env.VERCEL) {
+  wss = new WebSocketServer({ server });
+  wss.on("connection", (socket) => {
+    wsClients.add(socket);
 
-  socket.on("close", () => {
-    wsClients.delete(socket);
+    socket.on("close", () => {
+      wsClients.delete(socket);
+    });
   });
-});
+}
 
 const db = await openDb();
 
@@ -962,6 +965,11 @@ app.get("*", (req, res) => {
 });
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
-server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+
+if (!process.env.VERCEL) {
+  server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+}
+
+export default app;
