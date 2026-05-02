@@ -16,7 +16,7 @@ import { hashFile } from "./hash.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..", "..");
-const frontendDir = path.join(rootDir, "frontend");
+const frontendDir = path.join(rootDir, "public");
 
 const app = express();
 app.use(cors());
