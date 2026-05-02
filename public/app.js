@@ -17,7 +17,7 @@ const sampleData = {
       createdAt: "2021-03-12T10:15:00.000Z",
       modifiedAt: "2021-03-12T10:15:00.000Z",
       permissions: "rw-r--r--",
-      owner: "ADMIN\\User",
+      owner: "Admin",
       path: "C:\\DemoData\\Project_Proposal.docx"
     },
     {
@@ -28,7 +28,7 @@ const sampleData = {
       createdAt: "2023-04-18T09:20:00.000Z",
       modifiedAt: "2023-04-18T09:20:00.000Z",
       permissions: "rw-r--r--",
-      owner: "ADMIN\\User",
+      owner: "Admin",
       path: "C:\\DemoData\\System_Design.pptx"
     },
     {
@@ -39,7 +39,7 @@ const sampleData = {
       createdAt: "2023-05-09T14:35:00.000Z",
       modifiedAt: "2023-05-09T14:35:00.000Z",
       permissions: "rw-r--r--",
-      owner: "ADMIN\\User",
+      owner: "Admin",
       path: "C:\\DemoData\\Data_Analysis.xlsx"
     },
     {
@@ -50,7 +50,7 @@ const sampleData = {
       createdAt: "2023-06-21T11:45:00.000Z",
       modifiedAt: "2023-06-21T11:45:00.000Z",
       permissions: "rw-r--r--",
-      owner: "ADMIN\\User",
+      owner: "Admin",
       path: "C:\\DemoData\\Project_Report.pdf"
     },
     {
@@ -61,7 +61,7 @@ const sampleData = {
       createdAt: "2023-07-02T13:10:00.000Z",
       modifiedAt: "2023-07-02T13:10:00.000Z",
       permissions: "rw-r--r--",
-      owner: "ADMIN\\User",
+      owner: "Admin",
       path: "C:\\DemoData\\Screenshot.png"
     }
   ],
@@ -109,14 +109,14 @@ const sampleData = {
       path: "C:\\DemoData\\Project_Proposal.docx",
       sizeBytes: 24576,
       modifiedAt: "2021-03-12T10:15:00.000Z",
-      owner: "ADMIN\\User"
+      owner: "Admin"
     },
     {
       name: "System_Design.pptx",
       path: "C:\\DemoData\\System_Design.pptx",
       sizeBytes: 2450000,
       modifiedAt: "2023-04-18T09:20:00.000Z",
-      owner: "ADMIN\\User"
+      owner: "Admin"
     }
   ],
   dirSummary: [
@@ -330,8 +330,8 @@ async function fetchJson(url, options) {
         freeMemory: 18,
         usedMemory: 14,
         uptime: 345600,
-        hostname: "DESKTOP-DEMO",
-        username: "ADMIN\\User",
+        hostname: "Admin",
+        username: "Admin",
         nodeVersion: "v20.10.0"
       };
     }
