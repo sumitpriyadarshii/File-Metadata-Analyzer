@@ -263,7 +263,66 @@ function syncSettingsUI() {
   if (sampleFallback) sampleFallback.checked = state.settings.sampleFallback;
 }
 
+function isDemoMode() {
+  const host = window.location.hostname;
+  return host !== "localhost" && host !== "127.0.0.1";
+}
+
+// Make the initial sample data always look like it was scanned today
+const now = new Date();
+sampleData.scans[0].completedAt = new Date(now.getTime() - 1000 * 60 * 5).toISOString();
+sampleData.scans[0].startedAt = new Date(now.getTime() - 1000 * 60 * 7).toISOString();
+sampleData.scans[1].completedAt = new Date(now.getTime() - 1000 * 60 * 60 * 2).toISOString();
+sampleData.scans[1].startedAt = new Date(now.getTime() - 1000 * 60 * 60 * 2 - 1000 * 60 * 3).toISOString();
+
+let mockScanStatus = "queued";
+let mockScanId = 32;
+
 async function fetchJson(url, options) {
+  if (isDemoMode()) {
+    await new Promise(r => setTimeout(r, 400)); // fake network latency
+
+    if (url.includes("/scan")) {
+      mockScanStatus = "running";
+      setTimeout(() => { 
+        mockScanStatus = "completed"; 
+        
+        // Dynamically add a brand new scan to the history when the fake scan completes
+        const path = options && options.body ? JSON.parse(options.body).path : "User Directory";
+        const newScan = {
+          id: mockScanId++,
+          rootPath: path || "Scanned Directory",
+          startedAt: new Date(Date.now() - 2500).toISOString(),
+          completedAt: new Date().toISOString(),
+          totalFiles: Math.floor(Math.random() * 2000) + 500
+        };
+        sampleData.scans.unshift(newScan);
+        
+        // Bump up the summary stats to make it feel alive
+        sampleData.summary.totalFiles += newScan.totalFiles;
+        sampleData.summary.totalSizeBytes += Math.floor(Math.random() * 500000000) + 100000000;
+
+      }, 2500); 
+      return { jobId: "demo-job-123", status: "queued" };
+    }
+    if (url.includes("/status")) {
+      return { status: mockScanStatus };
+    }
+    
+    if (url.includes("/summary")) return sampleData.summary;
+    if (url.includes("/files") || url.includes("/search") || url.includes("/all")) return { items: sampleData.files };
+    if (url.includes("/file-types")) return { items: sampleData.fileTypes };
+    if (url.includes("/largest")) return { items: sampleData.largest };
+    if (url.includes("/size-buckets")) return { items: sampleData.sizeBuckets };
+    if (url.includes("/recent-scans")) return { items: sampleData.scans };
+    if (url.includes("/aging")) return { items: sampleData.aging, cutoff: new Date().toISOString() };
+    if (url.includes("/dir-summary")) return { items: sampleData.dirSummary };
+    if (url.includes("/duplicates")) return { items: [] };
+    if (url.includes("/watch")) return { active: false };
+
+    return {};
+  }
+
   const response = await fetch(url, options);
   if (!response.ok) {
     throw new Error("Request failed");
