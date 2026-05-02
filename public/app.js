@@ -263,7 +263,41 @@ function syncSettingsUI() {
   if (sampleFallback) sampleFallback.checked = state.settings.sampleFallback;
 }
 
+function isDemoMode() {
+  // If not on localhost or 127.0.0.1, treat it as a hosted demo
+  const host = window.location.hostname;
+  return host !== "localhost" && host !== "127.0.0.1";
+}
+
+let mockScanStatus = "queued";
+
 async function fetchJson(url, options) {
+  if (isDemoMode()) {
+    await new Promise(r => setTimeout(r, 400)); // fake network latency
+
+    if (url.includes("/scan")) {
+      mockScanStatus = "running";
+      setTimeout(() => { mockScanStatus = "completed"; }, 2500); // Fake scan duration
+      return { jobId: "demo-job-123", status: "queued" };
+    }
+    if (url.includes("/status")) {
+      return { status: mockScanStatus };
+    }
+    
+    if (url.includes("/summary")) return sampleData.summary;
+    if (url.includes("/files") || url.includes("/search") || url.includes("/all")) return { items: sampleData.files };
+    if (url.includes("/file-types")) return { items: sampleData.fileTypes };
+    if (url.includes("/largest")) return { items: sampleData.largest };
+    if (url.includes("/size-buckets")) return { items: sampleData.sizeBuckets };
+    if (url.includes("/recent-scans")) return { items: sampleData.scans };
+    if (url.includes("/aging")) return { items: sampleData.aging, cutoff: new Date().toISOString() };
+    if (url.includes("/dir-summary")) return { items: sampleData.dirSummary };
+    if (url.includes("/duplicates")) return { items: [] };
+    if (url.includes("/watch")) return { active: false };
+
+    return {};
+  }
+
   const response = await fetch(url, options);
   if (!response.ok) {
     throw new Error("Request failed");
