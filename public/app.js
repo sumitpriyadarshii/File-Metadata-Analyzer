@@ -1864,12 +1864,38 @@ function setupQuickActions() {
 }
 
 async function exportCsvReport() {
+  if (typeof isDemoMode === "function" && isDemoMode()) {
+    const header = ["Name", "Type", "SizeBytes", "CreatedAt", "ModifiedAt", "Owner", "Path"];
+    const lines = [header.join(",")];
+    
+    sampleData.files.forEach((f) => {
+      const vals = [f.name, f.type, f.sizeBytes, f.createdAt, f.modifiedAt, f.owner, f.path];
+      lines.push(vals.map((v) => `"${(v || "").toString().replace(/"/g, '""')}"`).join(","));
+    });
+    
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `file-metadata-demo-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return;
+  }
+  
   window.open(`${API_BASE}/export?format=csv`, "_blank");
 }
 
 async function cleanDatabase() {
   const confirmed = window.confirm("This will delete all stored scan data. Continue?");
   if (!confirmed) {
+    return;
+  }
+
+  if (typeof isDemoMode === "function" && isDemoMode()) {
+    setScanStatus("Database cannot be cleared in Demo Mode.", "error");
     return;
   }
 
