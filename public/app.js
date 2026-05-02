@@ -2,133 +2,133 @@ const API_BASE = "/api";
 
 const sampleData = {
   summary: {
-    totalFiles: 1248,
-    totalFolders: 156,
-    totalSizeBytes: 2450000000,
-    oldestFileDate: "2021-03-12T00:00:00.000Z",
-    oldestFilePath: "C:\\DemoData\\Project_Proposal.docx"
+    totalFiles: 4200,
+    totalFolders: 350,
+    totalSizeBytes: 10485760000,
+    oldestFileDate: "2019-01-15T00:00:00.000Z",
+    oldestFilePath: "C:\\Company_Vault\\Founding_Documents.pdf"
   },
   files: [
     {
-      name: "Project_Proposal.docx",
-      type: "Documents",
-      ext: ".docx",
-      sizeBytes: 24576,
-      createdAt: "2021-03-12T10:15:00.000Z",
-      modifiedAt: "2021-03-12T10:15:00.000Z",
-      permissions: "rw-r--r--",
-      owner: "Admin",
-      path: "C:\\DemoData\\Project_Proposal.docx"
-    },
-    {
-      name: "System_Design.pptx",
-      type: "Documents",
-      ext: ".pptx",
-      sizeBytes: 2450000,
-      createdAt: "2023-04-18T09:20:00.000Z",
-      modifiedAt: "2023-04-18T09:20:00.000Z",
-      permissions: "rw-r--r--",
-      owner: "Admin",
-      path: "C:\\DemoData\\System_Design.pptx"
-    },
-    {
-      name: "Data_Analysis.xlsx",
+      name: "Q3_Financial_Projections.xlsx",
       type: "Documents",
       ext: ".xlsx",
-      sizeBytes: 532000,
-      createdAt: "2023-05-09T14:35:00.000Z",
-      modifiedAt: "2023-05-09T14:35:00.000Z",
+      sizeBytes: 154000,
+      createdAt: "2023-08-12T10:15:00.000Z",
+      modifiedAt: "2023-08-15T14:20:00.000Z",
       permissions: "rw-r--r--",
       owner: "Admin",
-      path: "C:\\DemoData\\Data_Analysis.xlsx"
+      path: "C:\\Corporate\\Finance\\Q3_Financial_Projections.xlsx"
     },
     {
-      name: "Project_Report.pdf",
+      name: "Product_Launch_Roadmap.pptx",
       type: "Documents",
-      ext: ".pdf",
-      sizeBytes: 1120000,
-      createdAt: "2023-06-21T11:45:00.000Z",
-      modifiedAt: "2023-06-21T11:45:00.000Z",
+      ext: ".pptx",
+      sizeBytes: 4200000,
+      createdAt: "2023-09-01T09:00:00.000Z",
+      modifiedAt: "2023-09-05T11:30:00.000Z",
       permissions: "rw-r--r--",
       owner: "Admin",
-      path: "C:\\DemoData\\Project_Report.pdf"
+      path: "C:\\Corporate\\Marketing\\Product_Launch_Roadmap.pptx"
     },
     {
-      name: "Screenshot.png",
+      name: "Customer_Database_Backup.sql",
+      type: "Code",
+      ext: ".sql",
+      sizeBytes: 85000000,
+      createdAt: "2023-10-10T02:00:00.000Z",
+      modifiedAt: "2023-10-10T02:00:00.000Z",
+      permissions: "r--------",
+      owner: "Admin",
+      path: "C:\\Server_Backups\\Database\\Customer_Database_Backup.sql"
+    },
+    {
+      name: "Website_Hero_Image.png",
       type: "Images",
       ext: ".png",
-      sizeBytes: 1230000,
-      createdAt: "2023-07-02T13:10:00.000Z",
-      modifiedAt: "2023-07-02T13:10:00.000Z",
+      sizeBytes: 2100000,
+      createdAt: "2023-07-20T16:45:00.000Z",
+      modifiedAt: "2023-07-20T16:45:00.000Z",
       permissions: "rw-r--r--",
       owner: "Admin",
-      path: "C:\\DemoData\\Screenshot.png"
+      path: "C:\\Corporate\\Design\\Assets\\Website_Hero_Image.png"
+    },
+    {
+      name: "Employee_Handbook_2024.pdf",
+      type: "Documents",
+      ext: ".pdf",
+      sizeBytes: 3400000,
+      createdAt: "2024-01-05T08:30:00.000Z",
+      modifiedAt: "2024-01-10T09:15:00.000Z",
+      permissions: "rw-r--r--",
+      owner: "Admin",
+      path: "C:\\Corporate\\HR\\Employee_Handbook_2024.pdf"
     }
   ],
   fileTypes: [
-    { type: "Documents", count: 462 },
-    { type: "Images", count: 340 },
-    { type: "Videos", count: 185 },
-    { type: "Archives", count: 95 },
-    { type: "Code", count: 86 },
-    { type: "Other", count: 80 }
+    { type: "Documents", count: 1850 },
+    { type: "Images", count: 1200 },
+    { type: "Code", count: 850 },
+    { type: "Archives", count: 150 },
+    { type: "Videos", count: 90 },
+    { type: "Other", count: 60 }
   ],
   largest: [
-    { name: "Windows11-22H2.iso", sizeBytes: 4690000000, path: "C:\\Downloads\\Windows11-22H2.iso" },
-    { name: "Project_Video.mp4", sizeBytes: 512000000, path: "C:\\DemoData\\Project_Video.mp4" },
-    { name: "Dataset_Backup.zip", sizeBytes: 256000000, path: "C:\\DemoData\\Dataset_Backup.zip" },
-    { name: "System_Image.png", sizeBytes: 128000000, path: "C:\\DemoData\\System_Image.png" },
-    { name: "VirtualBox-6.1.50.exe", sizeBytes: 103450000, path: "C:\\Installers\\VirtualBox-6.1.50.exe" }
+    { name: "Ubuntu_Server_22.04.iso", sizeBytes: 2100000000, path: "C:\\Downloads\\ISOs\\Ubuntu_Server_22.04.iso" },
+    { name: "Promo_Video_4K_Raw.mp4", sizeBytes: 1500000000, path: "C:\\Corporate\\Marketing\\Promo_Video_4K_Raw.mp4" },
+    { name: "Machine_Learning_Dataset.zip", sizeBytes: 850000000, path: "C:\\Projects\\AI\\Machine_Learning_Dataset.zip" },
+    { name: "Customer_Database_Backup.sql", sizeBytes: 85000000, path: "C:\\Server_Backups\\Database\\Customer_Database_Backup.sql" },
+    { name: "Photoshop_Installer.exe", sizeBytes: 45000000, path: "C:\\Downloads\\Software\\Photoshop_Installer.exe" }
   ],
   sizeBuckets: [
-    { label: "0 - 10 KB", count: 210 },
-    { label: "10 KB - 1 MB", count: 420 },
-    { label: "1 MB - 10 MB", count: 320 },
-    { label: "10 MB - 100 MB", count: 210 },
-    { label: "100+ MB", count: 88 }
+    { label: "0 - 10 KB", count: 500 },
+    { label: "10 KB - 1 MB", count: 2100 },
+    { label: "1 MB - 10 MB", count: 1100 },
+    { label: "10 MB - 100 MB", count: 400 },
+    { label: "100+ MB", count: 100 }
   ],
   scans: [
     {
-      id: 31,
-      rootPath: "C:\\DemoData",
-      startedAt: "2024-04-28T09:05:00.000Z",
-      completedAt: "2024-04-28T09:07:00.000Z",
-      totalFiles: 1248
+      id: 42,
+      rootPath: "C:\\Corporate",
+      startedAt: "2024-05-01T08:00:00.000Z",
+      completedAt: "2024-05-01T08:05:00.000Z",
+      totalFiles: 4200
     },
     {
-      id: 30,
-      rootPath: "C:\\Downloads",
-      startedAt: "2024-04-27T18:10:00.000Z",
-      completedAt: "2024-04-27T18:13:00.000Z",
-      totalFiles: 980
+      id: 41,
+      rootPath: "C:\\Projects",
+      startedAt: "2024-04-20T17:30:00.000Z",
+      completedAt: "2024-04-20T17:34:00.000Z",
+      totalFiles: 3850
     }
   ],
   aging: [
     {
-      name: "Project_Proposal.docx",
-      path: "C:\\DemoData\\Project_Proposal.docx",
-      sizeBytes: 24576,
-      modifiedAt: "2021-03-12T10:15:00.000Z",
+      name: "Founding_Documents.pdf",
+      path: "C:\\Company_Vault\\Founding_Documents.pdf",
+      sizeBytes: 1500000,
+      modifiedAt: "2019-01-15T00:00:00.000Z",
       owner: "Admin"
     },
     {
-      name: "System_Design.pptx",
-      path: "C:\\DemoData\\System_Design.pptx",
-      sizeBytes: 2450000,
-      modifiedAt: "2023-04-18T09:20:00.000Z",
+      name: "Old_Logo_Draft.png",
+      path: "C:\\Corporate\\Design\\Archive\\Old_Logo_Draft.png",
+      sizeBytes: 850000,
+      modifiedAt: "2020-03-10T14:20:00.000Z",
       owner: "Admin"
     }
   ],
   dirSummary: [
     {
-      path: "C:\\DemoData",
-      totalFiles: 4,
-      totalSizeBytes: 4377576
+      path: "C:\\Corporate\\Finance",
+      totalFiles: 450,
+      totalSizeBytes: 250000000
     },
     {
-      path: "C:\\Downloads",
-      totalFiles: 1,
-      totalSizeBytes: 4690000000
+      path: "C:\\Corporate\\Marketing",
+      totalFiles: 1200,
+      totalSizeBytes: 1800000000
     }
   ]
 };
