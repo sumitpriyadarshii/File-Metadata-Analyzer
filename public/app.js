@@ -319,6 +319,22 @@ async function fetchJson(url, options) {
     if (url.includes("/dir-summary")) return { items: sampleData.dirSummary };
     if (url.includes("/duplicates")) return { items: [] };
     if (url.includes("/watch")) return { active: false };
+    if (url.includes("/system-info")) {
+      return {
+        os: "Windows",
+        release: "10.0.22631",
+        arch: "x64",
+        cpuModel: "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+        cpuCount: 16,
+        totalMemory: 32,
+        freeMemory: 18,
+        usedMemory: 14,
+        uptime: 345600,
+        hostname: "DESKTOP-SUMIT",
+        username: "SUMIT\\Sumit",
+        nodeVersion: "v20.10.0"
+      };
+    }
 
     return {};
   }
