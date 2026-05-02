@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>File Metadata Analyzer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-icon"></div>
+          <div class="brand-text">
+            <div class="brand-title">File Metadata</div>
+            <div class="brand-subtitle">Analyzer</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-section">Scan and Explore</div>
+          <button class="nav-item active" data-view="dashboard">Dashboard</button>
+          <button class="nav-item" data-view="scan">Scan Directory</button>
+          <button class="nav-item" data-view="files">All Files</button>
+          <button class="nav-item" data-view="scans">Recent Scans</button>
+          <div class="nav-section">Analytics</div>
+          <button class="nav-item" data-view="stats">File Statistics</button>
+          <button class="nav-item" data-view="size">Size Distribution</button>
+          <button class="nav-item" data-view="type">Type Distribution</button>
+          <button class="nav-item" data-view="top">Top Files</button>
+          <button class="nav-item" data-view="aging">Aging Analysis</button>
+          <button class="nav-item" data-view="directories">Directory Summary</button>
+          <button class="nav-item" data-view="search">Advanced Search</button>
+          <button class="nav-item" data-view="duplicates">Duplicates</button>
+          <div class="nav-section">System</div>
+          <button class="nav-item" data-view="system">System Info</button>
+          <button class="nav-item" data-view="settings">Settings</button>
+          <button class="nav-item" data-view="about">About</button>
+        </nav>
+        <div class="status-card">
+          <div class="status-indicator"></div>
+          <div class="status-text">
+            <div class="status-title" id="systemStatusTitle">System Status</div>
+            <div class="status-subtitle" id="systemStatusState">Idle</div>
+            <div class="status-muted" id="systemStatusScan">No scans yet</div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="search">
+            <input id="globalSearch" type="text" placeholder="Search files or folders..." />
+          </div>
+          <div class="topbar-actions">
+            <div id="liveStatus" class="status-pill idle">Idle</div>
+            <button id="filtersButton" class="ghost">Filters</button>
+            <button id="refreshButton" class="ghost">Refresh</button>
+            <button id="scanButton" class="primary">Scan Directory</button>
+          </div>
+        </header>
+        <section class="view active" data-view="dashboard">
+          <section class="welcome">
+            <div>
+              <h1>Welcome back,</h1>
+              <p>Here is an overview of your scanned files and folders.</p>
+            </div>
+            <div class="user-chip">
+              <div class="user-avatar"></div>
+              <div>
+                <div class="user-name">Unknown</div>
+                <div class="user-role">Administrator</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="cards">
+            <div class="card">
+              <div class="card-icon icon-blue"></div>
+              <div class="card-label">Total Files</div>
+              <div class="card-value" id="totalFiles">0</div>
+              <div class="card-sub">Across all scanned folders</div>
+              <div class="progress progress-blue"></div>
+            </div>
+            <div class="card">
+              <div class="card-icon icon-green"></div>
+              <div class="card-label">Total Folders</div>
+              <div class="card-value" id="totalFolders">0</div>
+              <div class="card-sub">Across all scanned folders</div>
+              <div class="progress progress-green"></div>
+            </div>
+            <div class="card">
+              <div class="card-icon icon-purple"></div>
+              <div class="card-label">Total Size</div>
+              <div class="card-value" id="totalSize">0 B</div>
+              <div class="card-sub">Count of all files</div>
+              <div class="progress progress-purple"></div>
+            </div>
+            <div class="card">
+              <div class="card-icon icon-orange"></div>
+              <div class="card-label">Oldest File</div>
+              <div class="card-value" id="oldestFileDate">N/A</div>
+              <div class="card-sub" id="oldestFilePath">No scan yet</div>
+              <div class="progress progress-orange"></div>
+            </div>
+          </section>
+
+          <section class="content-grid">
+            <div class="left-column">
+              <div class="panel files-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Files</div>
+                    <div class="panel-subtitle">Showing recent scanned files</div>
+                  </div>
+                  <div class="panel-actions">
+                    <input id="fileSearch" type="text" placeholder="Search in files..." />
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="file-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Created At</th>
+                        <th>Modified At</th>
+                        <th>Owner</th>
+                        <th>Permissions</th>
+                        <th>Path</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fileRows">
+                      <tr>
+                        <td colspan="8" class="empty-state">No files scanned yet</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="panel size-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">File Size Distribution</div>
+                    <div class="panel-subtitle">Counts per size bucket</div>
+                  </div>
+                  <div class="panel-actions">
+                    <span class="pill">Files</span>
+                  </div>
+                </div>
+                <canvas id="sizeChart" height="140"></canvas>
+              </div>
+            </div>
+
+            <div class="right-column">
+              <div class="panel type-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">File Type Distribution</div>
+                    <div class="panel-subtitle">Breakdown by category</div>
+                  </div>
+                  <div class="panel-actions">
+                    <span class="pill">Total</span>
+                  </div>
+                </div>
+                <div class="chart-wrap">
+                  <canvas id="typeChart" height="180"></canvas>
+                  <div id="typeLegend" class="legend"></div>
+                </div>
+              </div>
+
+              <div class="panel largest-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Top 5 Largest Files</div>
+                    <div class="panel-subtitle">Highest disk usage</div>
+                  </div>
+                </div>
+                <div id="largestFiles" class="largest-list"></div>
+              </div>
+
+              <div class="panel scans-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Recent Scans</div>
+                    <div class="panel-subtitle">Latest scan activity</div>
+                  </div>
+                </div>
+                <div class="scan-content">
+                  <div id="scanRing" class="scan-ring">
+                    <div class="scan-count" id="scanCount">0</div>
+                  </div>
+                  <div id="recentScans" class="scan-list"></div>
+                </div>
+              </div>
+
+              <div class="panel quick-panel">
+                <div class="panel-header">
+                  <div>
+                    <div class="panel-title">Quick Actions</div>
+                    <div class="panel-subtitle">Common tasks</div>
+                  </div>
+                </div>
+                <div class="quick-actions">
+                  <button id="quickScan" class="action-card action-scan">Scan Directory</button>
+                  <button id="quickExport" class="action-card">Export Report</button>
+                  <button id="quickClean" class="action-card">Clean Database</button>
+                  <button id="quickSettings" class="action-card">Settings</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-view="scan">
+          <div class="view-header">
+            <div>
+              <h2>Scan Directory</h2>
+              <p>Start a new scan and collect metadata from your files.</p>
+            </div>
+            <div class="view-actions">
+              <span class="pill">Local Scan</span>
+            </div>
+          </div>
+
+          <div class="panel scan-form">
+            <div class="form-grid">
+              <div class="field">
+                <label for="scanPathInput">Directory path</label>
+                <input id="scanPathInput" type="text" placeholder="C:\Users\YourUser\Documents" />
+              </div>
+              <div class="field checkbox-field">
+                <label>
+                  <input id="scanIncremental" type="checkbox" />
+                  Incremental scan (only changes)
+                </label>
+              </div>
+              <button id="scanSubmit" class="primary">Start Scan</button>
+            </div>
+            <div id="scanStatus" class="status-message">Ready to scan.</div>
+            <div class="scan-progress">
+              <div class="scan-progress-bar" id="scanProgressBar"></div>
+            </div>
+            <div id="scanProgressText" class="scan-progress-text">Waiting for a scan.</div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Latest Scan Summary</div>
+                <div class="panel-subtitle">Quick stats from the most recent scan.</div>
+              </div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-tile">
+                <div class="stat-label">Total Files</div>
+                <div class="stat-value" id="scanTotalFiles">0</div>
+              </div>
+              <div class="stat-tile">
+                <div class="stat-label">Total Folders</div>
+                <div class="stat-value" id="scanTotalFolders">0</div>
+              </div>
+              <div class="stat-tile">
+                <div class="stat-label">Total Size</div>
+                <div class="stat-value" id="scanTotalSize">0 B</div>
+              </div>
+              <div class="stat-tile">
+                <div class="stat-label">Oldest File</div>
+                <div class="stat-value" id="scanOldestFile">N/A</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="files">
+          <div class="view-header">
+            <div>
+              <h2>All Files</h2>
+              <p>Browse every file captured in the latest scan.</p>
+            </div>
+            <div class="view-actions">
+              <button id="exportButton" class="ghost">Export CSV</button>
+            </div>
+          </div>
+
+          <div id="allFilters" class="panel filter-panel">
+            <div class="filter-grid">
+              <div class="field">
+                <label for="allSearch">Search</label>
+                <input id="allSearch" type="text" placeholder="Search by name, path, or owner" />
+              </div>
+              <div class="field">
+                <label for="typeFilter">File type</label>
+                <select id="typeFilter">
+                  <option value="">All Types</option>
+                  <option value="Documents">Documents</option>
+                  <option value="Images">Images</option>
+                  <option value="Videos">Videos</option>
+                  <option value="Audio">Audio</option>
+                  <option value="Archives">Archives</option>
+                  <option value="Code">Code</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="ownerFilter">Owner</label>
+                <input id="ownerFilter" type="text" placeholder="Filter by owner" />
+              </div>
+              <div class="field filter-actions">
+                <button id="clearFilters" class="ghost">Clear Filters</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">All Files</div>
+                <div class="panel-subtitle" id="allFilesCount">Showing 0 files</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="file-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Created At</th>
+                    <th>Modified At</th>
+                    <th>Owner</th>
+                    <th>Permissions</th>
+                    <th>Path</th>
+                  </tr>
+                </thead>
+                <tbody id="allFileRows">
+                  <tr>
+                    <td colspan="8" class="empty-state">No files scanned yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button id="prevPage" class="ghost small">Prev</button>
+              <div id="pageInfo" class="page-info">Page 1</div>
+              <button id="nextPage" class="ghost small">Next</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="scans">
+          <div class="view-header">
+            <div>
+              <h2>Recent Scans</h2>
+              <p>History of your latest scan sessions.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Scan History</div>
+                <div class="panel-subtitle">Newest sessions on top</div>
+              </div>
+            </div>
+            <div id="scanHistory" class="scan-history"></div>
+          </div>
+        </section>
+
+        <section class="view" data-view="stats">
+          <div class="view-header">
+            <div>
+              <h2>File Statistics</h2>
+              <p>High-level metrics derived from the latest scan.</p>
+            </div>
+          </div>
+
+          <div class="cards stats-cards">
+            <div class="card">
+              <div class="card-label">Total Files</div>
+              <div class="card-value" id="statTotalFiles">0</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Total Folders</div>
+              <div class="card-value" id="statTotalFolders">0</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Total Size</div>
+              <div class="card-value" id="statTotalSize">0 B</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Oldest File</div>
+              <div class="card-value" id="statOldestFile">N/A</div>
+            </div>
+          </div>
+
+          <div class="panel metrics-panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Derived Metrics</div>
+                <div class="panel-subtitle">Calculated from the latest scan data.</div>
+              </div>
+            </div>
+            <div class="metrics-grid">
+              <div class="metric-item">
+                <div class="metric-label">Average file size</div>
+                <div class="metric-value" id="statAvgSize">0 B</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">Files per folder</div>
+                <div class="metric-value" id="statFileRatio">0</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">Last scan date</div>
+                <div class="metric-value" id="statLastScan">N/A</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-label">Largest file count</div>
+                <div class="metric-value" id="statLargestCount">0</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="size">
+          <div class="view-header">
+            <div>
+              <h2>Size Distribution</h2>
+              <p>Visualize file counts by size buckets.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">File Size Distribution</div>
+                <div class="panel-subtitle">Latest scan</div>
+              </div>
+            </div>
+            <canvas id="sizeChartDetail" height="180"></canvas>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Bucket Details</div>
+                <div class="panel-subtitle">Counts per range</div>
+              </div>
+            </div>
+            <div id="sizeBucketList" class="bucket-list"></div>
+          </div>
+        </section>
+
+        <section class="view" data-view="type">
+          <div class="view-header">
+            <div>
+              <h2>Type Distribution</h2>
+              <p>Understand what types of files dominate the scan.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">File Type Distribution</div>
+                <div class="panel-subtitle">Latest scan</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="typeChartDetail" height="200"></canvas>
+              <div id="typeLegendDetail" class="legend"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="top">
+          <div class="view-header">
+            <div>
+              <h2>Top Files</h2>
+              <p>Largest files consuming disk space.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Top 5 Largest Files</div>
+                <div class="panel-subtitle">Sorted by size</div>
+              </div>
+            </div>
+            <div id="largestFilesDetail" class="largest-list"></div>
+          </div>
+        </section>
+
+        <section class="view" data-view="aging">
+          <div class="view-header">
+            <div>
+              <h2>Aging Analysis</h2>
+              <p>Find files that have not changed for a long time.</p>
+            </div>
+            <div class="view-actions">
+              <button id="refreshAging" class="ghost">Refresh</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="filter-grid search-grid">
+              <div class="field">
+                <label for="agingDays">Days old</label>
+                <input id="agingDays" type="number" min="1" value="90" />
+              </div>
+              <div class="field">
+                <label for="agingLimit">Limit</label>
+                <input id="agingLimit" type="number" min="1" max="500" value="100" />
+              </div>
+              <div class="field filter-actions">
+                <button id="agingApply" class="primary">Analyze</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Stale Files</div>
+                <div class="panel-subtitle" id="agingCount">Showing 0 files</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="file-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Modified At</th>
+                    <th>Size</th>
+                    <th>Owner</th>
+                    <th>Path</th>
+                  </tr>
+                </thead>
+                <tbody id="agingRows">
+                  <tr>
+                    <td colspan="5" class="empty-state">No aging data yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="view-actions">
+              <span class="pill" id="agingCutoff">Ready</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="directories">
+          <div class="view-header">
+            <div>
+              <h2>Directory Summary</h2>
+              <p>Group files by directory to see where data is concentrated.</p>
+            </div>
+            <div class="view-actions">
+              <button id="refreshDirectories" class="ghost">Refresh</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="filter-grid search-grid">
+              <div class="field">
+                <label for="dirSummaryDepth">Depth</label>
+                <input id="dirSummaryDepth" type="number" min="1" value="2" />
+              </div>
+              <div class="field">
+                <label for="dirSummaryLimit">Limit</label>
+                <input id="dirSummaryLimit" type="number" min="1" max="200" value="20" />
+              </div>
+              <div class="field filter-actions">
+                <button id="dirSummaryApply" class="primary">Summarize</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Directory Totals</div>
+                <div class="panel-subtitle" id="dirSummaryCount">Showing 0 folders</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="file-table">
+                <thead>
+                  <tr>
+                    <th>Directory</th>
+                    <th>Files</th>
+                    <th>Total Size</th>
+                  </tr>
+                </thead>
+                <tbody id="dirSummaryRows">
+                  <tr>
+                    <td colspan="3" class="empty-state">No directory summary yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="search">
+          <div class="view-header">
+            <div>
+              <h2>Advanced Search</h2>
+              <p>Search by name, size range, date range, owner, and type.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="filter-grid search-grid">
+              <div class="field">
+                <label for="searchName">Name</label>
+                <input id="searchName" type="text" placeholder="Report" />
+              </div>
+              <div class="field">
+                <label for="searchOwner">Owner</label>
+                <input id="searchOwner" type="text" placeholder="SUMIT" />
+              </div>
+              <div class="field">
+                <label for="searchType">Type</label>
+                <select id="searchType">
+                  <option value="">All Types</option>
+                  <option value="Documents">Documents</option>
+                  <option value="Images">Images</option>
+                  <option value="Videos">Videos</option>
+                  <option value="Audio">Audio</option>
+                  <option value="Archives">Archives</option>
+                  <option value="Code">Code</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="searchMinSize">Min Size (bytes)</label>
+                <input id="searchMinSize" type="number" placeholder="1024" />
+              </div>
+              <div class="field">
+                <label for="searchMaxSize">Max Size (bytes)</label>
+                <input id="searchMaxSize" type="number" placeholder="10000000" />
+              </div>
+              <div class="field">
+                <label for="searchFromDate">From Date</label>
+                <input id="searchFromDate" type="date" />
+              </div>
+              <div class="field">
+                <label for="searchToDate">To Date</label>
+                <input id="searchToDate" type="date" />
+              </div>
+              <div class="field">
+                <label for="searchSortBy">Sort By</label>
+                <select id="searchSortBy">
+                  <option value="modified">Modified Date</option>
+                  <option value="created">Created Date</option>
+                  <option value="name">Name</option>
+                  <option value="size">Size</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="searchSortDir">Sort Direction</label>
+                <select id="searchSortDir">
+                  <option value="desc">Descending</option>
+                  <option value="asc">Ascending</option>
+                </select>
+              </div>
+              <div class="field filter-actions">
+                <button id="searchApply" class="primary">Search</button>
+              </div>
+              <div class="field filter-actions">
+                <button id="searchClear" class="ghost">Clear</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Search Results</div>
+                <div class="panel-subtitle" id="searchCount">Showing 0 files</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="file-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Created At</th>
+                    <th>Modified At</th>
+                    <th>Owner</th>
+                    <th>Permissions</th>
+                    <th>Path</th>
+                  </tr>
+                </thead>
+                <tbody id="searchRows">
+                  <tr>
+                    <td colspan="8" class="empty-state">No results yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button id="searchPrev" class="ghost small">Prev</button>
+              <div id="searchPageInfo" class="page-info">Page 1</div>
+              <button id="searchNext" class="ghost small">Next</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="duplicates">
+          <div class="view-header">
+            <div>
+              <h2>Duplicate Files</h2>
+              <p>Hash-based groups of identical files.</p>
+            </div>
+            <div class="view-actions">
+              <button id="refreshDuplicates" class="ghost">Refresh</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div id="duplicateGroups" class="duplicate-list"></div>
+          </div>
+        </section>
+
+        <section class="view" data-view="system">
+          <div class="view-header">
+            <div>
+              <h2>System Info</h2>
+              <p>Environment details from this machine.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Runtime Information</div>
+                <div class="panel-subtitle">Browser and locale data</div>
+              </div>
+            </div>
+            <div id="systemInfo" class="system-grid"></div>
+          </div>
+        </section>
+
+        <section class="view" data-view="settings">
+          <div class="view-header">
+            <div>
+              <h2>Settings</h2>
+              <p>Control dashboard behavior and preferences.</p>
+            </div>
+          </div>
+          <div class="panel settings-panel">
+            <div class="setting-row">
+              <div>
+                <div class="setting-title">Auto refresh</div>
+                <div class="setting-desc">Refresh dashboard data every 60 seconds.</div>
+              </div>
+              <label class="toggle">
+                <input id="settingAutoRefresh" type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-title">Compact tables</div>
+                <div class="setting-desc">Reduce row height for dense file lists.</div>
+              </div>
+              <label class="toggle">
+                <input id="settingCompactTable" type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-title">Sample fallback</div>
+                <div class="setting-desc">Show demo data when the API is offline.</div>
+              </div>
+              <label class="toggle">
+                <input id="settingSampleFallback" type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="about">
+          <div class="view-header">
+            <div>
+              <h2>About</h2>
+              <p>File Metadata Analyzer.</p>
+            </div>
+          </div>
+          <div class="panel about-panel">
+            <div class="about-grid">
+              <div class="about-card">
+                <div class="panel-title">Project Goal</div>
+                <p>Analyze file metadata such as size, creation date, and owner with a clean, modern dashboard.</p>
+              </div>
+              <div class="about-card">
+                <div class="panel-title">Team Notes</div>
+                <p>Built with a Node.js backend, SQLite storage, and a Chart.js powered frontend.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

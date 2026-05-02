@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FileMetaX — Intelligent File Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0c14;--ink2:#0f1220;--ink3:#141828;
+  --gold:#e8c97a;--gold2:#f5dfa0;--gold3:#c9a84c;
+  --ice:#a8c8f8;--ice2:#d4e8ff;
+  --ember:#ff7043;--ember2:#ff9a70;
+  --sage:#4fd4a4;--sage2:#7ee8c2;
+  --void:rgba(255,255,255,0.04);--void2:rgba(255,255,255,0.08);
+  --rim:rgba(255,255,255,0.08);--rim2:rgba(255,255,255,0.14);
+  --txt:#e8eaf4;--txt2:#8b93b0;--txt3:#4a5270;
+  --ff:'Syne',sans-serif;--fb:'Manrope',sans-serif;--fm:'JetBrains Mono',monospace;
+  --nav-h:72px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--fb);background:var(--ink);color:var(--txt);
+  overflow-x:hidden;cursor:none;
+  background-image:
+    radial-gradient(ellipse 120% 60% at 50% -10%,rgba(232,201,122,0.05),transparent),
+    radial-gradient(ellipse 60% 80% at 100% 50%,rgba(79,212,164,0.04),transparent),
+    radial-gradient(ellipse 80% 60% at 0% 100%,rgba(255,112,67,0.04),transparent);
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px}
+#cur{width:10px;height:10px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference}
+#curR{width:36px;height:36px;border:1px solid rgba(232,201,122,0.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.18s cubic-bezier(0.25,0.46,0.45,0.94)}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");background-size:200px;opacity:0.6}
+.grd{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;display:flex;align-items:center;padding:0 48px;background:rgba(10,12,20,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--rim);transition:all 0.3s}
+nav.sc{background:rgba(10,12,20,0.92);border-color:var(--rim2)}
+.nlogo{font-family:var(--ff);font-size:20px;font-weight:800;letter-spacing:-0.02em;color:var(--txt);display:flex;align-items:center;gap:10px;text-decoration:none}
+.nmark{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--ember));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:var(--fm);font-weight:500;color:var(--ink);position:relative;overflow:hidden}
+.nmark::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,0.2);border-radius:8px 8px 0 0}
+.nlinks{display:flex;align-items:center;gap:6px;margin:0 auto}
+.nlink{font-size:13.5px;font-weight:500;color:var(--txt2);padding:7px 16px;border-radius:8px;text-decoration:none;transition:all 0.18s;border:1px solid transparent}
+.nlink:hover{color:var(--txt);background:var(--void2);border-color:var(--rim)}
+.nbtn1{font-family:var(--fb);font-size:13px;font-weight:600;color:var(--txt2);padding:8px 18px;border-radius:9px;border:1px solid var(--rim);background:transparent;cursor:pointer;transition:all 0.18s;text-decoration:none}
+.nbtn1:hover{color:var(--txt);border-color:var(--rim2);background:var(--void)}
+.nbtn2{font-family:var(--fb);font-size:13px;font-weight:700;color:var(--ink);padding:9px 22px;border-radius:9px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold3));transition:all 0.2s;text-decoration:none;display:flex;align-items:center;gap:7px;box-shadow:0 4px 18px rgba(232,201,122,0.25)}
+.nbtn2:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(232,201,122,0.38)}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:var(--nav-h) 48px 0;overflow:hidden}
+#hc{position:absolute;inset:0;z-index:1;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:od 12s ease-in-out infinite}
+.o1{width:600px;height:600px;right:-100px;top:-100px;background:radial-gradient(circle,rgba(232,201,122,0.08),transparent 70%);animation-duration:14s}
+.o2{width:500px;height:500px;left:-80px;bottom:50px;background:radial-gradient(circle,rgba(79,212,164,0.07),transparent 70%);animation-delay:-5s;animation-duration:18s}
+.o3{width:400px;height:400px;right:30%;top:40%;background:radial-gradient(circle,rgba(255,112,67,0.05),transparent 70%);animation-delay:-9s;animation-duration:16s}
+@keyframes od{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,30px)}}
+.hi{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1280px;width:100%}
+.ht{max-width:580px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:11px;font-weight:500;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;background:rgba(232,201,122,0.08);border:1px solid rgba(232,201,122,0.2);padding:6px 14px;border-radius:100px;margin-bottom:28px}
+.edot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.h1{font-family:var(--ff);font-size:clamp(46px,5.5vw,72px);font-weight:800;line-height:1.0;letter-spacing:-0.03em;margin-bottom:24px}
+.hl{display:block;overflow:hidden}
+.hw{display:inline-block;animation:wr 0.8s cubic-bezier(0.22,1,0.36,1) both}
+.hl:nth-child(1) .hw{animation-delay:0.05s}
+.hl:nth-child(2) .hw{animation-delay:0.15s}
+.hl:nth-child(3) .hw{animation-delay:0.25s}
+@keyframes wr{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.acc{background:linear-gradient(90deg,var(--gold),var(--gold2),var(--ember2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdesc{font-size:17px;font-weight:400;color:var(--txt2);line-height:1.7;margin-bottom:40px;max-width:480px;animation:fu 0.8s 0.4s cubic-bezier(0.22,1,0.36,1) both}
+.hacts{display:flex;align-items:center;gap:14px;flex-wrap:wrap;animation:fu 0.8s 0.5s cubic-bezier(0.22,1,0.36,1) both}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.btnH{font-family:var(--fb);font-size:15px;font-weight:700;padding:15px 32px;border-radius:12px;border:none;cursor:pointer;transition:all 0.22s;display:flex;align-items:center;gap:9px;text-decoration:none}
+.btnP{background:linear-gradient(135deg,var(--gold),#d4a843);color:var(--ink);box-shadow:0 8px 32px rgba(232,201,122,0.3)}
+.btnP:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(232,201,122,0.45)}
+.btnS{background:var(--void2);border:1px solid var(--rim2);color:var(--txt)}
+.btnS:hover{background:rgba(255,255,255,0.06);border-color:var(--rim2)}
+.hstats{display:flex;gap:32px;margin-top:48px;padding-top:40px;border-top:1px solid var(--rim);animation:fu 0.8s 0.6s cubic-bezier(0.22,1,0.36,1) both}
+.hs{display:flex;flex-direction:column;gap:3px}
+.hsv{font-family:var(--ff);font-size:28px;font-weight:800;color:var(--txt);letter-spacing:-0.03em}
+.hsl{font-size:12px;font-weight:500;color:var(--txt3);text-transform:uppercase;letter-spacing:0.06em}
+.hv{display:flex;align-items:center;justify-content:center;position:relative;height:560px;animation:fu 1s 0.3s cubic-bezier(0.22,1,0.36,1) both}
+.fp{position:absolute;background:rgba(14,17,30,0.9);border:1px solid var(--rim2);border-radius:14px;padding:14px 18px;backdrop-filter:blur(20px);z-index:10;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.fp1{top:40px;left:-20px;animation:pf1 6s ease-in-out infinite}
+.fp2{bottom:70px;right:-30px;animation:pf2 6s ease-in-out infinite;animation-delay:-3s}
+.fp3{top:50%;left:50%;transform:translate(-50%,-50%);width:200px;animation:pf3 6s ease-in-out infinite;animation-delay:-1.5s}
+@keyframes pf1{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pf2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pf3{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 8px))}}
+.fpl{font-family:var(--fm);font-size:9.5px;color:var(--txt3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em}
+.fpr{display:flex;align-items:center;gap:8px;font-size:12.5px;margin-top:5px}
+.fpi{font-size:14px;width:18px;text-align:center}
+.fpv{font-family:var(--ff);font-weight:700;color:var(--txt);font-size:14px}
+.fps{font-size:10px;color:var(--txt3)}
+.fpb{height:3px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-top:8px}
+.fpbf{height:100%;border-radius:3px}
+.bg{background:linear-gradient(90deg,var(--gold),var(--gold2));width:74%}
+.bs{background:linear-gradient(90deg,var(--sage),var(--sage2));width:55%}
+.bi{background:linear-gradient(90deg,var(--ice),var(--ice2));width:83%}
+.bdg{display:inline-flex;align-items:center;gap:4px;background:rgba(79,212,164,0.1);border:1px solid rgba(79,212,164,0.25);color:var(--sage);padding:3px 9px;border-radius:100px;font-size:10.5px;font-weight:700}
+.bd{width:5px;height:5px;border-radius:50%;background:var(--sage);animation:blink 2s infinite}
+section{padding:120px 48px;max-width:1280px;margin:0 auto;position:relative;z-index:2}
+.slbl{font-family:var(--fm);font-size:11px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.slbl::before{content:'';display:block;width:28px;height:1px;background:var(--gold);opacity:0.5}
+.sh2{font-family:var(--ff);font-size:clamp(34px,4vw,54px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:18px}
+.sd{font-size:17px;color:var(--txt2);line-height:1.7;max-width:560px;margin-bottom:64px}
+.dvd{height:1px;background:linear-gradient(90deg,transparent,var(--rim2),transparent);margin:0 48px}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--rim);border-radius:20px;overflow:hidden}
+.feat{background:var(--ink2);padding:40px 36px;position:relative;overflow:hidden;transition:background 0.25s;cursor:default}
+.feat:hover{background:var(--ink3)}
+.feat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transform:scaleX(0.5);transition:all 0.3s}
+.feat:hover::before{opacity:1;transform:scaleX(1)}
+.fnum{font-family:var(--fm);font-size:11px;color:var(--txt3);margin-bottom:28px;letter-spacing:0.06em}
+.fico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:24px}
+.fig{background:rgba(232,201,122,0.1);border:1px solid rgba(232,201,122,0.2)}
+.fis{background:rgba(79,212,164,0.1);border:1px solid rgba(79,212,164,0.18)}
+.fii{background:rgba(168,200,248,0.1);border:1px solid rgba(168,200,248,0.18)}
+.fie{background:rgba(255,112,67,0.1);border:1px solid rgba(255,112,67,0.18)}
+.fiv{background:rgba(155,110,255,0.1);border:1px solid rgba(155,110,255,0.18)}
+.fip{background:rgba(244,114,182,0.1);border:1px solid rgba(244,114,182,0.18)}
+.ftt{font-family:var(--ff);font-size:19px;font-weight:700;margin-bottom:12px;letter-spacing:-0.02em}
+.fde{font-size:14.5px;color:var(--txt2);line-height:1.65}
+.farr{position:absolute;bottom:32px;right:32px;width:36px;height:36px;border-radius:50%;border:1px solid var(--rim);display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:16px;transition:all 0.2s}
+.feat:hover .farr{border-color:var(--gold);color:var(--gold);background:rgba(232,201,122,0.08);transform:translate(2px,-2px)}
+.hg{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:24px;padding:32px 0;border-bottom:1px solid var(--rim);transition:all 0.2s;cursor:default}
+.step:last-child{border-bottom:none}
+.step:hover .sn{background:rgba(232,201,122,0.15);border-color:rgba(232,201,122,0.3);color:var(--gold)}
+.sn{width:44px;height:44px;border-radius:12px;border:1px solid var(--rim);background:var(--void);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:13px;font-weight:500;color:var(--txt3);flex-shrink:0;transition:all 0.2s;margin-top:2px}
+.sti{font-family:var(--ff);font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-0.01em}
+.std{font-size:13.5px;color:var(--txt2);line-height:1.6}
+.term{background:#080a12;border:1px solid var(--rim2);border-radius:18px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.6)}
+.tbar{display:flex;align-items:center;gap:8px;padding:14px 18px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--rim)}
+.td{width:12px;height:12px;border-radius:50%}
+.tdr{background:#ff5f57}.tdy{background:#ffbd2e}.tdg{background:#28c840}
+.ttl{font-family:var(--fm);font-size:12px;color:var(--txt3);margin-left:auto;margin-right:auto}
+.tbody{padding:24px 26px;min-height:280px}
+.tline{display:flex;gap:10px;font-family:var(--fm);font-size:13px;line-height:1.7;margin-bottom:2px}
+.tp{color:var(--sage);flex-shrink:0}
+.tc{color:var(--txt)}
+.to{color:var(--txt2)}
+.tok{color:var(--sage)}
+.tk{color:var(--ice)}
+.tv{color:var(--gold)}
+.tdm{color:var(--txt3)}
+.tcb{display:inline-block;width:8px;height:14px;background:var(--gold);margin-left:2px;vertical-align:middle;animation:blink 1s step-end infinite}
+.mb{background:var(--ink2);border-top:1px solid var(--rim);border-bottom:1px solid var(--rim);padding:60px 48px}
+.mi{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--rim);border-radius:16px;overflow:hidden}
+.met{background:var(--ink2);padding:40px 32px;text-align:center;transition:background 0.2s}
+.met:hover{background:var(--ink3)}
+.mv{font-family:var(--ff);font-size:48px;font-weight:800;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;background:linear-gradient(135deg,var(--txt),var(--txt2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mv.g{background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text}
+.mv.s{background:linear-gradient(135deg,var(--sage),var(--sage2));-webkit-background-clip:text;background-clip:text}
+.mv.i{background:linear-gradient(135deg,var(--ice),var(--ice2));-webkit-background-clip:text;background-clip:text}
+.ml{font-size:13px;color:var(--txt3);font-weight:500;letter-spacing:0.03em}
+.sr{display:flex;flex-wrap:wrap;gap:12px;margin-top:48px}
+.spl{display:flex;align-items:center;gap:8px;background:var(--void2);border:1px solid var(--rim);padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;color:var(--txt2);transition:all 0.18s;cursor:default}
+.spl:hover{border-color:var(--rim2);color:var(--txt);background:rgba(255,255,255,0.06)}
+.spd{width:7px;height:7px;border-radius:50%}
+.mods{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.mod{background:var(--ink2);border:1px solid var(--rim);border-radius:18px;padding:32px;transition:all 0.22s;cursor:default;position:relative;overflow:hidden}
+.mod::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,201,122,0.04),transparent 60%);opacity:0;transition:opacity 0.3s;pointer-events:none}
+.mod:hover{border-color:var(--rim2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.mod:hover::after{opacity:1}
+.mtag{font-family:var(--fm);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;padding:4px 10px;border-radius:100px;margin-bottom:20px;display:inline-flex}
+.tg{background:rgba(232,201,122,0.1);color:var(--gold);border:1px solid rgba(232,201,122,0.2)}
+.ts{background:rgba(79,212,164,0.09);color:var(--sage);border:1px solid rgba(79,212,164,0.18)}
+.ti{background:rgba(168,200,248,0.09);color:var(--ice);border:1px solid rgba(168,200,248,0.18)}
+.mh{font-family:var(--ff);font-size:21px;font-weight:800;margin-bottom:10px;letter-spacing:-0.02em}
+.mp{font-size:13.5px;color:var(--txt2);line-height:1.65;margin-bottom:20px}
+.ml2{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ml2 li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt2)}
+.ml2 li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--rim2);flex-shrink:0}
+.ctas{text-align:center;padding:140px 48px;position:relative;overflow:hidden}
+.ctab{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(232,201,122,0.07),transparent 70%);pointer-events:none}
+.ctah{font-family:var(--ff);font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:20px;max-width:700px;margin-inline:auto}
+.ctad{font-size:18px;color:var(--txt2);margin-bottom:44px;max-width:500px;margin-inline:auto}
+.ctaa{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--rim);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+.fl{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--txt2)}
+.fc{font-size:13px;color:var(--txt3)}
+.fls{display:flex;gap:24px}
+.flk{font-size:13px;color:var(--txt3);text-decoration:none;transition:color 0.15s}
+.flk:hover{color:var(--txt)}
+.rv{opacity:0;transform:translateY(28px);transition:all 0.7s cubic-bezier(0.22,1,0.36,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:0.05s}.d2{transition-delay:0.12s}.d3{transition-delay:0.19s}
+.mcrd{background:var(--ink2);border:1px solid var(--rim);border-radius:18px;padding:24px;transition:all 0.22s;cursor:default}
+.mcrd:hover{border-color:var(--rim2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+@media (max-width: 1100px){.hi,.hg,.mods,.mi{grid-template-columns:1fr}.fg{grid-template-columns:1fr 1fr}.hv{height:460px}}
+@media (max-width: 700px){nav{padding:0 16px}.nlinks{display:none}section,.mb,.ctas,footer{padding-left:18px;padding-right:18px}.h1{font-size:clamp(40px,14vw,58px)}.hstats{gap:18px;flex-wrap:wrap}.fg{grid-template-columns:1fr}.mods{grid-template-columns:1fr}.ctaa{flex-direction:column}.btnH{justify-content:center;width:100%}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+<div class="grd"></div>
+
+<nav id="nav">
+  <a href="#" class="nlogo">
+    <div class="nmark">FM</div>FileMetaX
+  </a>
+  <div class="nlinks">
+    <a href="#features" class="nlink">Features</a>
+    <a href="#how" class="nlink">How it Works</a>
+    <a href="#modules" class="nlink">Modules</a>
+    <a href="#tech" class="nlink">Technology</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <a href="#" class="nbtn1">Docs</a>
+    <a href="/dashboard" class="nbtn2"><span>Get Started</span><span>→</span></a>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <canvas id="hc"></canvas>
+
+  <div class="hi">
+    <div class="ht">
+      <div class="eyebrow">
+        <span class="edot"></span>
+        File Metadata Analyzer
+      </div>
+      <h1 class="h1">
+        <span class="hl"><span class="hw">Intelligent</span></span>
+        <span class="hl"><span class="hw acc">File Metadata</span></span>
+        <span class="hl"><span class="hw">Intelligence.</span></span>
+      </h1>
+      <p class="hdesc">Analyze, visualize, and understand your file system at a deeper level. Track size, creation dates, ownership, and type distribution across entire directories — in real time.</p>
+      <div class="hacts">
+        <a href="/dashboard" class="btnH btnP"><span>📂</span><span>Scan Directory</span></a>
+        <a href="#how" class="btnH btnS"><span>See how it works</span><span>↓</span></a>
+      </div>
+      <div class="hstats">
+        <div class="hs"><span class="hsv">1,248</span><span class="hsl">Files Analyzed</span></div>
+        <div class="hs"><span class="hsv">2.45<span style="font-size:18px;color:var(--txt2)">GB</span></span><span class="hsl">Total Size</span></div>
+        <div class="hs"><span class="hsv">156</span><span class="hsl">Directories</span></div>
+      </div>
+    </div>
+
+    <div class="hv">
+      <div class="fp fp1">
+        <div class="fpl">File Distribution</div>
+        <div class="fpr"><span class="fpi">📄</span><span style="color:var(--ice);font-family:var(--fm);font-size:12px">Documents</span><span class="fpv" style="margin-left:auto;color:var(--txt2);font-size:13px">37%</span></div>
+        <div class="fpb"><div class="fpbf bi"></div></div>
+        <div class="fpr"><span class="fpi">🖼️</span><span style="color:var(--sage);font-family:var(--fm);font-size:12px">Images</span><span class="fpv" style="margin-left:auto;color:var(--txt2);font-size:13px">28%</span></div>
+        <div class="fpb"><div class="fpbf bs"></div></div>
+        <div class="fpr"><span class="fpi">🎬</span><span style="color:var(--gold);font-family:var(--fm);font-size:12px">Videos</span><span class="fpv" style="margin-left:auto;color:var(--txt2);font-size:13px">15%</span></div>
+        <div class="fpb"><div class="fpbf bg"></div></div>
+      </div>
+
+      <div class="fp fp2">
+        <div class="fpl">Latest Scan</div>
+        <div class="fpr"><span class="fpi">📁</span><div><div class="fpv">Project Files</div><div class="fps">C:\Users\Sumit\...</div></div></div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+          <span class="bdg"><span class="bd"></span>Completed</span>
+          <span style="font-family:var(--fm);font-size:10.5px;color:var(--txt3)">2 mins ago</span>
+        </div>
+      </div>
+
+      <div class="fp fp3">
+        <div style="text-align:center">
+          <div style="font-family:var(--ff);font-size:26px;font-weight:800;color:var(--gold);letter-spacing:-0.02em">2.45 GB</div>
+          <div style="font-size:10px;color:var(--txt3);margin-top:2px;font-family:var(--fm)">TOTAL STORAGE</div>
+          <div style="margin-top:12px;display:flex;gap:6px;justify-content:center">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--ice)"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--sage)"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--gold)"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--ember)"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<div class="mb">
+  <div class="mi">
+    <div class="met rv"><div class="mv g">1,248</div><div class="ml">Files Indexed</div></div>
+    <div class="met rv d1"><div class="mv s">156</div><div class="ml">Directories Scanned</div></div>
+    <div class="met rv d2"><div class="mv i">5</div><div class="ml">File Type Categories</div></div>
+    <div class="met rv d3"><div class="mv">100%</div><div class="ml">Metadata Accuracy</div></div>
+  </div>
+</div>
+
+<div class="dvd"></div>
+
+<section id="features">
+  <div class="slbl rv">Core Capabilities</div>
+  <h2 class="sh2 rv">Everything you need to<br>understand your file system.</h2>
+  <div class="fg rv">
+    <div class="feat"><div class="fnum">01</div><div class="fico fig">📊</div><div class="ftt">Metadata Extraction</div><div class="fde">Capture name, type, size, creation date, modification date, and ownership for every file — instantly.</div><div class="farr">→</div></div>
+    <div class="feat"><div class="fnum">02</div><div class="fico fis">📈</div><div class="ftt">Visual Analytics</div><div class="fde">Interactive donut charts, bar distributions, and real-time stat cards that turn raw data into actionable insight.</div><div class="farr">→</div></div>
+    <div class="feat"><div class="fnum">03</div><div class="fico fii">🔍</div><div class="ftt">Smart Search & Filter</div><div class="fde">Search across thousands of files by name, type, or owner. Sort by size, date, or path with single-click precision.</div><div class="farr">→</div></div>
+    <div class="feat"><div class="fnum">04</div><div class="fico fie">🗄️</div><div class="ftt">Persistent Storage</div><div class="fde">MongoDB-backed scan history. Every session is stored, queryable, and comparable against previous runs.</div><div class="farr">→</div></div>
+    <div class="feat"><div class="fnum">05</div><div class="fico fiv">⚡</div><div class="ftt">REST API</div><div class="fde">Full Express.js REST API with paginated listing, scan simulation, statistics aggregation, and CRUD operations.</div><div class="farr">→</div></div>
+    <div class="feat"><div class="fnum">06</div><div class="fico fip">🛡️</div><div class="ftt">Offline Fallback</div><div class="fde">Built-in mock data fallback ensures the dashboard is always functional — even without MongoDB.</div><div class="farr">→</div></div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<section id="how">
+  <div class="hg">
+    <div>
+      <div class="slbl rv">Execution Plan</div>
+      <h2 class="sh2 rv">From directory scan<br>to dashboard — in seconds.</h2>
+      <div class="steps">
+        <div class="step rv"><div class="sn">01</div><div><div class="sti">Point to a Directory</div><div class="std">Enter any local path. The backend scan endpoint receives it and begins traversal immediately.</div></div></div>
+        <div class="step rv d1"><div class="sn">02</div><div><div class="sti">Metadata Extraction</div><div class="std">Node.js uses the fs module to read name, size, timestamps, type, owner, and path for every file.</div></div></div>
+        <div class="step rv d2"><div class="sn">03</div><div><div class="sti">Persist to MongoDB</div><div class="std">All file records and scan sessions are saved via Mongoose — indexed and ready for instant query.</div></div></div>
+        <div class="step rv d3"><div class="sn">04</div><div><div class="sti">Render the Dashboard</div><div class="std">The frontend fetches aggregated stats and renders cards, charts, and tables — live, in real time.</div></div></div>
+      </div>
+    </div>
+    <div class="term rv">
+      <div class="tbar">
+        <div class="td tdr"></div><div class="td tdy"></div><div class="td tdg"></div>
+        <div class="ttl">filemetax — terminal</div>
+      </div>
+      <div class="tbody">
+        <div class="tline"><span class="tp">$</span><span class="tc"> node server.js</span></div>
+        <div class="tline"><span class="to tok">✔ MongoDB connected</span></div>
+        <div class="tline"><span class="to tok">✔ Server running on http://localhost:5000</span></div>
+        <div class="tline" style="margin-top:14px"><span class="tp">$</span><span class="tc"> curl POST /api/scans</span></div>
+        <div class="tline"><span class="to tdm">  directory: "C:\Users\Sumit\Project Files"</span></div>
+        <div class="tline" style="margin-top:8px"><span class="to">  Scanning</span><span class="to tdm"> ...</span></div>
+        <div class="tline"><span class="to tk">  totalFiles  </span><span class="to tv">1248</span></div>
+        <div class="tline"><span class="to tk">  totalFolders</span><span class="to tv">156</span></div>
+        <div class="tline"><span class="to tk">  totalSize   </span><span class="to tv">2.45 GB</span></div>
+        <div class="tline"><span class="to tk">  status      </span><span class="to tok">completed</span></div>
+        <div class="tline" style="margin-top:14px"><span class="tp">$</span><span class="tc"> GET /api/stats/dashboard</span></div>
+        <div class="tline"><span class="to tdm">  → 200 OK (12ms)</span></div>
+        <div class="tline" style="margin-top:6px"><span class="tp">$</span><span class="tcb"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<section id="modules">
+  <div class="slbl rv">Architecture</div>
+  <h2 class="sh2 rv">Three focused modules.<br>One seamless system.</h2>
+  <div class="mods">
+    <div class="mod rv"><div class="mtag tg">Module 01</div><h3 class="mh">Frontend GUI</h3><p class="mp">A pixel-perfect dark dashboard with real-time charts, sortable file tables, and a responsive layout built from pure HTML, CSS, and Vanilla JS.</p><ul class="ml2"><li>Stat cards with progress indicators</li><li>SVG donut &amp; bar charts (no libraries)</li><li>Paginated, searchable file table</li><li>Scan modal &amp; toast notifications</li><li>WebGL particle 3D visualization</li></ul></div>
+    <div class="mod rv d1"><div class="mtag ts">Module 02</div><h3 class="mh">Backend API</h3><p class="mp">An Express.js REST server with structured routes, full CRUD for files and scans, aggregated statistics, and mock-data fallback.</p><ul class="ml2"><li>GET /api/files — paginated + searchable</li><li>POST /api/scans — directory scan</li><li>GET /api/stats/dashboard — analytics</li><li>DELETE /api/files/:id — cleanup</li><li>In-memory fallback (no DB required)</li></ul></div>
+    <div class="mod rv d2"><div class="mtag ti">Module 03</div><h3 class="mh">Database Layer</h3><p class="mp">MongoDB Atlas with Mongoose ODM. Two clean schemas with 200-record seed data and indexed queries for fast analytics.</p><ul class="ml2"><li>File schema: name, type, size, dates</li><li>Scan schema: directory, status, counts</li><li>seed.js — 200 sample file records</li><li>Indexed on type, size, createdAt</li><li>Aggregation pipeline for statistics</li></ul></div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<section id="tech">
+  <div class="hg" style="gap:60px;align-items:start">
+    <div>
+      <div class="slbl rv">Technology Stack</div>
+      <h2 class="sh2 rv">Built with the right tools<br>for the job.</h2>
+      <p class="sd rv" style="margin-bottom:0">Every technology was chosen for a reason — lightweight, reliable, and battle-tested for full-stack Node.js applications.</p>
+      <div class="sr rv">
+        <div class="spl"><div class="spd" style="background:var(--gold)"></div>Node.js</div>
+        <div class="spl"><div class="spd" style="background:var(--sage)"></div>Express.js</div>
+        <div class="spl"><div class="spd" style="background:var(--ice)"></div>MongoDB</div>
+        <div class="spl"><div class="spd" style="background:var(--ember)"></div>Mongoose</div>
+        <div class="spl"><div class="spd" style="background:#7c5dfa"></div>HTML5 + CSS3</div>
+        <div class="spl"><div class="spd" style="background:#f472b6"></div>Vanilla JS</div>
+        <div class="spl"><div class="spd" style="background:var(--gold)"></div>Node fs Module</div>
+        <div class="spl"><div class="spd" style="background:var(--sage)"></div>dotenv + CORS + uuid</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:60px">
+      <div class="mcrd rv"><div style="font-size:22px;margin-bottom:10px">⚡</div><div style="font-family:var(--ff);font-size:15px;font-weight:700;margin-bottom:6px">Fast API</div><div style="font-size:12.5px;color:var(--txt2)">Sub-20ms response times for all dashboard statistics endpoints.</div></div>
+      <div class="mcrd rv d1"><div style="font-size:22px;margin-bottom:10px">🛡️</div><div style="font-family:var(--ff);font-size:15px;font-weight:700;margin-bottom:6px">Resilient</div><div style="font-size:12.5px;color:var(--txt2)">Mock data fallback keeps the UI live even without a database.</div></div>
+      <div class="mcrd rv d2"><div style="font-size:22px;margin-bottom:10px">📦</div><div style="font-family:var(--ff);font-size:15px;font-weight:700;margin-bottom:6px">Self-Contained</div><div style="font-size:12.5px;color:var(--txt2)">Single npm install. No build tools, bundlers, or frameworks needed.</div></div>
+      <div class="mcrd rv d3"><div style="font-size:22px;margin-bottom:10px">🔌</div><div style="font-family:var(--ff);font-size:15px;font-weight:700;margin-bottom:6px">Extensible</div><div style="font-size:12.5px;color:var(--txt2)">Modular route structure — add new endpoints effortlessly.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<div class="ctas" id="cta">
+  <div class="ctab"></div>
+  <div class="slbl rv" style="justify-content:center">Get Started</div>
+  <h2 class="ctah rv">Ready to analyze your<br><span class="acc">file system?</span></h2>
+  <p class="ctad rv">Run the backend, open the dashboard, and scan your first directory in under 60 seconds.</p>
+  <div class="ctaa rv">
+    <a href="/dashboard" class="btnH btnP"><span>🚀</span><span>Launch Dashboard</span></a>
+    <a href="#" class="btnH btnS"><span>View Source</span><span>↗</span></a>
+  </div>
+  <div style="margin-top:44px;display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-size:12px;color:var(--txt3);background:var(--void2);border:1px solid var(--rim);padding:10px 20px;border-radius:100px">
+    <span style="color:var(--sage)">$</span>
+    <span>Scan, analyze, and organize files in seconds.</span>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">FileMetaX</div>
+  <div class="fc">© 2026 File Metadata Analyzer</div>
+  <div class="fls">
+    <a href="#features" class="flk">Features</a>
+    <a href="#how" class="flk">How it Works</a>
+    <a href="#modules" class="flk">Modules</a>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function anim(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim)})();
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('sc',window.scrollY>40));
+const obs=new IntersectionObserver(e=>e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('vis')}),{threshold:0.12});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+(function(){
+  const canvas=document.getElementById('hc');
+  function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight}
+  canvas.style.width='100%';canvas.style.height='100%';
+  resize();window.addEventListener('resize',resize);
+  const gl=canvas.getContext('webgl')||canvas.getContext('experimental-webgl');
+  if(!gl){fallback(canvas);return}
+  const vs=`
+attribute vec3 aP;attribute float aSz;attribute float aA;attribute vec3 aCol;
+uniform float uT;uniform vec2 uM;varying float vA;varying vec3 vC;
+void main(){
+  vec3 p=aP;
+  float s=sin(uT*0.5+aA*3.14);float c2=cos(uT*0.4+aA*2.1);
+  p.x+=s*0.06+cos(p.y*2.0+uT)*0.04;
+  p.y+=c2*0.05+sin(p.x*1.8+uT*0.7)*0.035;
+  p.z+=sin(p.x*2.2+uT*0.6)*0.03;
+  float dx=p.x-uM.x*1.6;float dy=p.y+uM.y*1.4;
+  float d=sqrt(dx*dx+dy*dy);
+  float push=max(0.0,1.0-d*3.0)*0.1;
+  p.x+=dx*push;p.y+=dy*push;
+  gl_Position=vec4(p.x*0.5,p.y*0.5,p.z,1.0);
+  gl_PointSize=aSz*(1.0+sin(uT*2.5+aA*6.28)*0.25);
+  vA=aA;vC=aCol;
+}`;
+  const fs=`
+precision mediump float;
+varying float vA;varying vec3 vC;
+void main(){
+  vec2 c=gl_PointCoord-0.5;float d=length(c);
+  if(d>0.5)discard;
+  float a=vA*(1.0-d*2.0)*0.9;
+  gl_FragColor=vec4(vC,a);
+}`;
+  function mkSh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s}
+  const prog=gl.createProgram();
+  gl.attachShader(prog,mkSh(gl.VERTEX_SHADER,vs));
+  gl.attachShader(prog,mkSh(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const N=2200;
+  const pos=new Float32Array(N*3),sz=new Float32Array(N),al=new Float32Array(N),col=new Float32Array(N*3);
+  const palettes=[[0.91,0.79,0.48],[0.31,0.83,0.64],[0.66,0.78,0.97],[1.0,0.44,0.26],[0.61,0.43,1.0]];
+  for(let i=0;i<N;i++){
+    if(i<350){const phi=Math.acos(1-2*Math.random());const th=2*Math.PI*Math.random();const r=0.65+Math.random()*0.25;pos[i*3]=r*Math.sin(phi)*Math.cos(th);pos[i*3+1]=r*Math.sin(phi)*Math.sin(th)*0.75;pos[i*3+2]=r*Math.cos(phi)*0.45;sz[i]=1.5+Math.random()*2.5;al[i]=0.18+Math.random()*0.35}
+    else if(i<650){const u=Math.random()*Math.PI*2;const v=Math.random()*Math.PI*2;const R=0.82,r2=0.16;pos[i*3]=(R+r2*Math.cos(v))*Math.cos(u);pos[i*3+1]=(R+r2*Math.cos(v))*Math.sin(u)*0.38;pos[i*3+2]=r2*Math.sin(v)*0.55;sz[i]=2.0+Math.random()*2.5;al[i]=0.3+Math.random()*0.5}
+    else if(i<950){pos[i*3]=((Math.floor(Math.random()*14)-7)/5.5)+(Math.random()-0.5)*0.035;pos[i*3+1]=((Math.floor(Math.random()*9)-4.5)/4.5)+(Math.random()-0.5)*0.035;pos[i*3+2]=((Math.floor(Math.random()*5)-2.5)/4)+(Math.random()-0.5)*0.03;sz[i]=2.8+Math.random()*2;al[i]=0.55+Math.random()*0.4}
+    else if(i<1200){const u2=i/250*Math.PI*6;const strand=i%2?1:-1;pos[i*3]=Math.cos(u2)*0.6;pos[i*3+1]=u2/18-0.9;pos[i*3+2]=Math.sin(u2)*0.3*strand;sz[i]=2.5+Math.random()*2;al[i]=0.4+Math.random()*0.4}
+    else {pos[i*3]=(Math.random()-0.5)*3.0;pos[i*3+1]=(Math.random()-0.5)*2.4;pos[i*3+2]=(Math.random()-0.5)*1.3;sz[i]=0.6+Math.random()*1.6;al[i]=0.03+Math.random()*0.1}
+    const pc=palettes[Math.floor(Math.random()*palettes.length)];col[i*3]=pc[0];col[i*3+1]=pc[1];col[i*3+2]=pc[2];
+  }
+  function mkBuf(data){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);return b}
+  const bP=mkBuf(pos),bS=mkBuf(sz),bA=mkBuf(al),bC=mkBuf(col);
+  const aP=gl.getAttribLocation(prog,'aP'),aSz=gl.getAttribLocation(prog,'aSz');
+  const aA=gl.getAttribLocation(prog,'aA'),aC=gl.getAttribLocation(prog,'aCol');
+  const uT=gl.getUniformLocation(prog,'uT'),uM=gl.getUniformLocation(prog,'uM');
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+  let mmx=0,mmy=0;
+  document.addEventListener('mousemove',e=>{mmx=(e.clientX/window.innerWidth)*2-1;mmy=(e.clientY/window.innerHeight)*2-1});
+  let t0=performance.now();
+  (function loop(){
+    const t=(performance.now()-t0)/1000;
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(uT,t);gl.uniform2f(uM,mmx,mmy);
+    gl.bindBuffer(gl.ARRAY_BUFFER,bP);gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,bS);gl.enableVertexAttribArray(aSz);gl.vertexAttribPointer(aSz,1,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,bA);gl.enableVertexAttribArray(aA);gl.vertexAttribPointer(aA,1,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,bC);gl.enableVertexAttribArray(aC);gl.vertexAttribPointer(aC,3,gl.FLOAT,false,0,0);
+    gl.drawArrays(gl.POINTS,0,N);requestAnimationFrame(loop);
+  })();
+  function fallback(canvas){
+    const ctx=canvas.getContext('2d');
+    function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight}
+    resize();window.addEventListener('resize',resize);
+    const pts=Array.from({length:200},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0004,vy:(Math.random()-0.5)*0.0004,r:Math.random()*2+0.5,a:Math.random()*0.5+0.1,c:`hsl(${Math.floor(Math.random()*60+30)},80%,70%)`}));
+    (function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>1)p.vx*=-1;if(p.y<0||p.y>1)p.vy*=-1;ctx.beginPath();ctx.arc(p.x*canvas.width,p.y*canvas.height,p.r,0,Math.PI*2);ctx.fillStyle=p.c;ctx.globalAlpha=p.a;ctx.fill();ctx.globalAlpha=1});requestAnimationFrame(loop)})();
+  }
+})();
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
+  });
+});
+</script>
+</body>
+</html>
