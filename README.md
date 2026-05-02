@@ -34,3 +34,30 @@ The scan runs as a background job. The UI polls status until completion.
 ## Optional C scanner (keeps Node backend intact)
 If your course requires C, you can use the C scanner to write into the same SQLite DB.
 See [c_scanner/README.md](c_scanner/README.md) for build/run steps.
+
+## Deploy on Vercel
+
+### What works on Vercel
+- Frontend hosting (landing + dashboard UI)
+- Static assets and client-side rendering
+
+### What does not work on Vercel serverless (for this app design)
+- Continuous local disk scanning of your own machine
+- Long-running filesystem watchers
+- SQLite file persistence for production-like backend state
+- WebSocket-based live updates from a long-running Node server
+
+This project's backend scans local filesystem paths (like `C:\Users\...`) and uses long-running Express + WebSocket + SQLite workflow, so full backend behavior is not suitable for Vercel serverless functions.
+
+### Recommended deployment model
+1. Deploy frontend on Vercel (this repo now includes `vercel.json` for routing).
+2. Keep backend on a VM/container platform (Railway/Render/EC2/local machine).
+3. Point frontend API calls to that backend URL if you move backend to a public host.
+
+### Vercel quick steps
+1. Import this GitHub repo into Vercel.
+2. Framework preset: `Other`.
+3. Root directory: project root.
+4. Deploy.
+
+With current code, Vercel deployment is best used as a frontend/demo host. For full scanning features, run backend separately.
