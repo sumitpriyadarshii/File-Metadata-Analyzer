@@ -200,6 +200,25 @@ function formatDate(value) {
   return date.toLocaleDateString();
 }
 
+function formatUptime(secondsValue) {
+  const seconds = Number(secondsValue || 0);
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    return "Unknown";
+  }
+
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  if (days > 0) {
+    return `${days}d ${hours}h ${minutes}m`;
+  }
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  return `${minutes}m`;
+}
+
 // Utility: debounce to limit frequent expensive operations
 function debounce(fn, wait) {
   let t = null;
@@ -917,7 +936,7 @@ function renderSystemInfo(data) {
     { label: "Total Memory", value: `${data.totalMemory} GB` || "Unknown" },
     { label: "Free Memory", value: `${data.freeMemory} GB` || "Unknown" },
     { label: "Used Memory", value: `${data.usedMemory} GB` || "Unknown" },
-    { label: "System Uptime", value: (() => { const s = Number(data.uptime || 0); const d = Math.floor(s / 86400); const h = Math.floor((s % 86400) / 3600); const m = Math.floor((s % 3600) / 60); return d > 0 ? `${d}d ${h}h ${m}m` : (h > 0 ? `${h}h ${m}m` : `${m}m`); })() },
+    { label: "System Uptime", value: formatUptime(data.uptime) },
     { label: "Hostname", value: data.hostname || "Unknown" },
     { label: "Username", value: data.username || "Unknown" },
     { label: "Node.js Version", value: data.nodeVersion || "Unknown" },
@@ -1978,4 +1997,5 @@ window.addEventListener("DOMContentLoaded", () => {
   loadCoreData();
   updateLiveStatusFromWatch();
 });
+
 
