@@ -33,12 +33,48 @@ This project scans folders and files, extracts metadata, stores the results in a
 
 - Scans directories using a Windows-native C implementation.
 - Writes into the same SQLite database as the Node backend.
-- Helps satisfy the C-language requirement while preserving the main architecture.
+- Integrates with the main architecture while supporting the course-required C implementation.
 
 ### API Layer
 
 - Serves the application and connects the frontend to backend logic.
 - Supports deployment routing for hosting scenarios such as Vercel.
+
+## Project Structure
+
+```text
+.
+├── api/
+│   └── index.js
+├── backend/
+│   ├── data/
+│   ├── src/
+│   │   ├── server.js
+│   │   ├── scan.js
+│   │   ├── db.js
+│   │   ├── hash.js
+│   │   ├── owner.js
+│   │   ├── fileTypes.js
+│   │   └── scanCli.js
+│   ├── tests/
+│   │   └── system-info.test.mjs
+│   ├── package.json
+│   └── package-lock.json
+├── c_scanner/
+│   ├── main.c
+│   └── README.md
+├── public/
+│   ├── app.js
+│   ├── dashboard.html
+│   ├── index.html
+│   ├── landing.html
+│   └── styles.css
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── README.md
+└── vercel.json
+```
 
 ## 3. Functionalities
 
